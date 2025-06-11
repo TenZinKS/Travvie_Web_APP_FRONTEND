@@ -1,4 +1,4 @@
 function Home() {
-  return <h4>Welcome to Travvie! Start planning your next trip ✈️</h4>;
+  return <div>🏠 This is the Home Page</div>;
 }
 export default Home;
