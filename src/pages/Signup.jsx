@@ -15,12 +15,12 @@ function Signup() {
     }
 
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/register", {
+      const res = await axios.post("http://localhost:4000/api/auth/signup", {
         name,
         email,
         password,
       });
-      alert(res.data.msg);
+      alert(res.data.msg || "Signup successful!");
       window.location.href = "/login";
     } catch (err) {
       alert(err.response?.data?.msg || "Signup failed");
@@ -37,7 +37,10 @@ function Signup() {
 
         {/* Right - Signup Form */}
         <div className="col-md-6 d-flex flex-column justify-content-center px-4">
-          <div className="bg-white shadow rounded p-4 text-center" style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
+          <div
+            className="bg-white shadow rounded p-4 text-center"
+            style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}
+          >
             <h4 className="fw-bold mb-4">Create Account</h4>
             <input
               type="email"
@@ -71,7 +74,11 @@ function Signup() {
               onChange={(e) => setConfirm(e.target.value)}
               style={{ backgroundColor: "#f0f4ff", border: "none" }}
             />
-            <button className="btn w-100 mb-3 text-white fw-bold rounded-pill" style={{ backgroundColor: "#00addc", fontSize: "1.1rem" }} onClick={handleSignup}>
+            <button
+              className="btn w-100 mb-3 text-white fw-bold rounded-pill"
+              style={{ backgroundColor: "#00addc", fontSize: "1.1rem" }}
+              onClick={handleSignup}
+            >
               Sign up
             </button>
             <Link to="/login" className="btn btn-light shadow-sm w-100 fw-bold rounded-pill">
