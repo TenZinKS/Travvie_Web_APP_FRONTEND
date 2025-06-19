@@ -8,6 +8,8 @@ import Favourites from "./pages/Favourites";
 import Itinerary from "./pages/Itinerary";
 import Trips from "./pages/Trips";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import UsersList from "./pages/Admin/UsersList";
 
 function App() {
   return (
@@ -18,6 +20,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<UsersList />} />
 
         {/* Dashboard with nested routes */}
         <Route path="/dashboard" element={<Dashboard />}>
