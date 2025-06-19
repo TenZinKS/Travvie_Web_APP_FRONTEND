@@ -10,6 +10,8 @@ import Trips from "./pages/Trips";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import UsersList from "./pages/Admin/UsersList";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminSignup from "./pages/Admin/AdminSignup";
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/signup" element={<AdminSignup />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<UsersList />} />
 
