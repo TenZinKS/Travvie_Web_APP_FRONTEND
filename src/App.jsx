@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import UsersList from "./pages/Admin/UsersList";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminSignup from "./pages/Admin/AdminSignup";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
 
         {/* Profile */}
         <Route path="/profile" element={<Profile />} />
+
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </Router>
   );

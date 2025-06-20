@@ -29,7 +29,7 @@ function AdminSignup() {
         password,
       });
       alert(res.data.msg || "Signup successful!");
-      navigate("/admin-login");
+      navigate("/admin/login");
     } catch (err) {
       alert(err.response?.data?.msg || "Signup failed");
     } finally {
