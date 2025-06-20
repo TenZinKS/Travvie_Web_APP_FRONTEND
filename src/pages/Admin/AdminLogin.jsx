@@ -30,25 +30,64 @@ function AdminLogin() {
   };
 
   return (
-    <div className="container mt-5">
-      <h3 className="mb-4">Admin Login</h3>
-      <input
-        type="email"
-        placeholder="Admin Email"
-        className="form-control mb-3"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        className="form-control mb-3"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button className="btn btn-primary" onClick={handleLogin}>
-        Login
-      </button>
+    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-white">
+      <div className="row w-100" style={{ maxWidth: "1200px" }}>
+        {/* Left - Logo */}
+        <div className="col-md-6 d-flex flex-column align-items-center justify-content-center text-center px-5">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            style={{ width: "300px", marginBottom: "20px" }}
+          />
+        </div>
+
+        {/* Right - Admin Login Form */}
+        <div className="col-md-6 d-flex flex-column justify-content-center px-4">
+          <div
+            className="bg-white shadow rounded p-4 text-center"
+            style={{
+              width: "100%",
+              maxWidth: "400px",
+              margin: "0 auto",
+            }}
+          >
+            <h2 className="fw-bold text-primary">Admin Panel</h2>
+            <p className="text-muted">Manage users and app data efficiently</p>
+            <input
+              type="email"
+              className="form-control mb-3 rounded-pill px-4 py-2"
+              placeholder="Admin Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                backgroundColor: "#f0f4ff",
+                border: "2px solid #587ff3",
+              }}
+            />
+            <input
+              type="password"
+              className="form-control mb-3 rounded-pill px-4 py-2"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                backgroundColor: "#f0f4ff",
+                border: "none",
+              }}
+            />
+            <button
+              className="btn w-100 mb-3 text-white fw-bold rounded-pill"
+              style={{
+                backgroundColor: "#00addc",
+                fontSize: "1.1rem",
+              }}
+              onClick={handleLogin}
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
