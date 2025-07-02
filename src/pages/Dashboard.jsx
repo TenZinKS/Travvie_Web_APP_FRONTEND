@@ -3,7 +3,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaBoxOpen,
-  FaCalendarAlt,
   FaSuitcase,
   FaUserCircle,
   FaRobot,
@@ -18,9 +17,9 @@ function Dashboard() {
 
   const menuItems = [
     { name: "Home", icon: <FaHome />, route: "/dashboard/home" },
-    { name: "Favourites", icon: <FaBoxOpen />, route: "/dashboard/favourites" },
-    { name: "Itinerary", icon: <FaCalendarAlt />, route: "/dashboard/itinerary" },
-    { name: "My Trips", icon: <FaSuitcase />, route: "/dashboard/trips" },
+    { name: "Create Trip", icon: <FaRobot />, route: "/dashboard/create_trip" },
+    { name: "My Trips", icon: <FaSuitcase />, route: "/dashboard/my_trips" },
+    { name: "Saved Trips", icon: <FaBoxOpen />, route: "/dashboard/saved_trips" },
   ];
 
   return (
@@ -59,7 +58,7 @@ function Dashboard() {
         <div className="d-flex justify-content-between align-items-center px-4 py-3 border-bottom bg-white shadow-sm">
           <div className="d-flex align-items-center gap-3">
             <FaBars size={22} style={{ cursor: "pointer" }} onClick={() => setSidebarOpen(!sidebarOpen)} />
-            <h4 className="fw-bold m-0">Dashboard</h4>
+            <h4 className="fw-bold m-0">Travvie</h4>
           </div>
           <FaUserCircle size={28} style={{ cursor: "pointer" }} onClick={() => navigate("/profile")} />
         </div>
