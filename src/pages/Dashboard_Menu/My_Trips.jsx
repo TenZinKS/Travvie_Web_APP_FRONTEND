@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function MyTrips() {
+function My_Trips() {
   const [trips, setTrips] = useState([]);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -23,14 +23,14 @@ function MyTrips() {
 
   const fetchTrips = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:4000/api/trips/user/${user.id}`
-      );
-      setTrips(res.data);
+      const res = await axios.get(`http://localhost:4000/api/trips/user/${user.id}`);
+      const nonWishlistTrips = res.data.filter(t => t.status !== "wishlist");
+      setTrips(nonWishlistTrips);
     } catch (err) {
       console.error(err);
     }
   };
+
 
   const handleAddTrip = async () => {
     try {
@@ -291,4 +291,4 @@ function getBadgeClass(status) {
   }
 }
 
-export default MyTrips;
+export default My_Trips;
