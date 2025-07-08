@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { marked } from "marked";
 
 function My_Trips() {
   const [trips, setTrips] = useState([]);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  // Form fields for new trip
   const [newTrip, setNewTrip] = useState({
     title: "",
     destination: "",
@@ -30,7 +30,6 @@ function My_Trips() {
       console.error(err);
     }
   };
-
 
   const handleAddTrip = async () => {
     try {
@@ -203,7 +202,7 @@ function My_Trips() {
           className="modal show d-block"
           style={{ background: "rgba(0,0,0,0.5)" }}
         >
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{selectedTrip.title}</h5>
@@ -231,10 +230,13 @@ function My_Trips() {
                     {selectedTrip.status}
                   </span>
                 </p>
-                <p>
-                  <strong>Itinerary:</strong>
-                </p>
-                <p>{selectedTrip.itinerary}</p>
+                <p><strong>Itinerary:</strong></p>
+                <div
+                  className="itinerary-markdown"
+                  dangerouslySetInnerHTML={{
+                    __html: marked.parse(selectedTrip.itinerary || "")
+                  }}
+                />
               </div>
               <div className="modal-footer d-flex justify-content-between">
                 <div className="d-flex gap-2">
