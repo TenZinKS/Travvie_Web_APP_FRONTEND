@@ -6,6 +6,7 @@ import "./Create_Trip.css";
 function Create_Trip() {
   const [phase, setPhase] = useState("form");
   const [formData, setFormData] = useState({
+    from: "",
     destination: "",
     people: "",
     startDate: "",
@@ -17,17 +18,15 @@ function Create_Trip() {
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [refineMode, setRefineMode] = useState(false);
+  const [savingStatus, setSavingStatus] = useState("planned");
 
   const chatRef = useRef(null);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const handleFormSubmit = async () => {
-    const userPrompt = `Plan me a ${formData.tourType} trip for ${formData.people} people to ${formData.destination} from ${formData.startDate} to ${formData.endDate}.`;
+    const userPrompt = `Plan me a ${formData.tourType} trip for ${formData.people} people traveling from ${formData.from} to ${formData.destination} from ${formData.startDate} to ${formData.endDate}.`;
 
-    const initialMessages = [
-      { role: "user", content: userPrompt }
-    ];
-
+    const initialMessages = [{ role: "user", content: userPrompt }];
     setMessages([{ sender: "user", text: userPrompt }]);
     setPhase("chat");
 
@@ -51,15 +50,14 @@ function Create_Trip() {
 
       const aiReply = res.data.reply;
 
-      // For first generation, parse trip JSON
       if (!isRefinement) {
-        // Always save the itinerary as raw markdown for consistency
         const parsedTrip = {
           title: "Custom Trip",
+          from: formData.from,
           destination: formData.destination,
           startDate: formData.startDate,
           endDate: formData.endDate,
-          itinerary: aiReply, // save raw markdown
+          itinerary: aiReply,
         };
         setTripData(parsedTrip);
         setRefineMode(true);
@@ -81,7 +79,6 @@ function Create_Trip() {
     if (!userInput.trim()) return;
 
     const newUserMsg = { role: "user", content: userInput };
-
     setMessages((prev) => [
       ...prev,
       { sender: "user", text: userInput },
@@ -93,7 +90,6 @@ function Create_Trip() {
     }));
 
     await sendMessageToAI([...allMsgs, newUserMsg], true);
-
     setUserInput("");
   };
 
@@ -102,10 +98,12 @@ function Create_Trip() {
       await axios.post("http://localhost:4000/api/trips", {
         ...tripData,
         userId: user.id,
+        status: savingStatus,
       });
       alert("Trip saved!");
       resetToForm();
     } catch (error) {
+      console.error(error);
       alert("Failed to save trip.");
     }
   };
@@ -113,6 +111,7 @@ function Create_Trip() {
   const resetToForm = () => {
     setPhase("form");
     setFormData({
+      from: "",
       destination: "",
       people: "",
       startDate: "",
@@ -136,6 +135,16 @@ function Create_Trip() {
 
       {phase === "form" && (
         <div className="card p-4 shadow-sm">
+          <div className="mb-3">
+            <input
+              className="form-control"
+              placeholder="From (Starting Point)"
+              value={formData.from}
+              onChange={(e) =>
+                setFormData({ ...formData, from: e.target.value })
+              }
+            />
+          </div>
           <div className="mb-3">
             <input
               className="form-control"
@@ -233,7 +242,7 @@ function Create_Trip() {
               className="form-control me-2"
               placeholder={
                 refineMode
-                  ? "Ask to refine your trip (other topics won't be answered)."
+                  ? "Ask to refine your trip..."
                   : "Generating initial plan..."
               }
               value={userInput}
@@ -253,20 +262,37 @@ function Create_Trip() {
           </div>
 
           {tripData && (
-            <div className="text-center mt-3">
-              <button
-                className="btn btn-success me-2"
-                onClick={handleSaveTrip}
-              >
-                Save Trip
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={resetToForm}
-              >
-                Start Over
-              </button>
-            </div>
+            <>
+              <div className="alert alert-info mt-3">
+                <strong>Trip:</strong> {tripData.from} → {tripData.destination}
+              </div>
+
+              <div className="text-center mt-3">
+                <label className="me-2 fw-bold">
+                  Save Trip As:
+                </label>
+                <select
+                  value={savingStatus}
+                  onChange={(e) => setSavingStatus(e.target.value)}
+                  className="form-select d-inline w-auto me-3"
+                >
+                  <option value="planned">Planned</option>
+                  <option value="upcoming">Upcoming</option>
+                </select>
+                <button
+                  className="btn btn-success me-2"
+                  onClick={handleSaveTrip}
+                >
+                  Save Trip
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={resetToForm}
+                >
+                  Start Over
+                </button>
+              </div>
+            </>
           )}
         </>
       )}

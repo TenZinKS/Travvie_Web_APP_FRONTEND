@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
-import ForgotPassword from "./pages/Auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Dashboard_Menu/Home";
 import Create_Trip from "./pages/Dashboard_Menu/Create_Trip";
@@ -13,6 +12,9 @@ import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminSignup from "./pages/Admin/AdminSignup";
 import EditProfile from "./pages/Auth/EditProfile";
 import Saved_Trips from "./pages/Dashboard_Menu/Saved_Trips";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import ResetPassword from "./pages/Auth/ResetPassword";
+import ChangePassword from "./pages/Auth/ChangePassword";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} /> 
+        <Route path="/change-password" element={<ChangePassword />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

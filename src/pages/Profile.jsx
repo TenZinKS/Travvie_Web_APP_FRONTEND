@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   FaEdit,
   FaKey,
-  FaHistory,
   FaChevronRight,
   FaSave,
   FaTimes,
+  FaTrash,
 } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const [user, setUser] = useState(storedUser);
   const [name, setName] = useState(user?.name || "");
@@ -17,8 +19,13 @@ function Profile() {
   const [preview, setPreview] = useState(user?.profilePic || "");
   const [isEditing, setIsEditing] = useState(false);
 
-  // ✅ Create a ref for file input
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    if (!user) {
+      window.location.href = "/login";
+    }
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -51,9 +58,27 @@ function Profile() {
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setIsEditing(false);
+      setProfilePic(null);
       alert("Profile updated!");
     } catch (err) {
       alert("Failed to update profile");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "⚠️ This action cannot be undone!\nAll your data will be permanently deleted. Are you sure you want to delete your account?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`http://localhost:4000/api/auth/${user.id}`);
+      alert("Your account has been deleted.");
+      handleLogout();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete account. Please try again.");
     }
   };
 
@@ -71,11 +96,11 @@ function Profile() {
           borderRadius: "20px",
         }}
       >
-        {/* ✅ Click image to trigger input via ref */}
         <img
           src={preview || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
           onError={(e) => {
-            e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            e.target.src =
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png";
           }}
           alt="Avatar"
           className="rounded-circle mb-3 border border-white"
@@ -83,11 +108,9 @@ function Profile() {
             width: "100px",
             height: "100px",
             objectFit: "cover",
-            cursor: isEditing ? "pointer" : "default",
+            cursor: "pointer",
           }}
-          onClick={() => {
-            if (isEditing) fileInputRef.current.click();
-          }}
+          onClick={() => fileInputRef.current.click()}
         />
         <input
           type="file"
@@ -100,12 +123,12 @@ function Profile() {
         {isEditing ? (
           <input
             type="text"
-            className="form-control mt-2 mb-2"
+            className="form-control mt-3 mb-2"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         ) : (
-          <h5 className="fw-bold">{user?.name}</h5>
+          <h5 className="fw-bold mt-3">{user?.name}</h5>
         )}
 
         <p className="mb-3">{user?.email}</p>
@@ -142,7 +165,11 @@ function Profile() {
 
       {/* Options */}
       <div className="w-100" style={{ maxWidth: "600px" }}>
-        <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+        <div
+          className="d-flex justify-content-between align-items-center py-3 border-bottom"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/change-password")}
+        >
           <div className="d-flex align-items-center gap-3">
             <FaKey />
             <span className="fw-semibold">Change Password</span>
@@ -150,10 +177,14 @@ function Profile() {
           <FaChevronRight />
         </div>
 
-        <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+        <div
+          className="d-flex justify-content-between align-items-center py-3 border-bottom text-danger"
+          style={{ cursor: "pointer" }}
+          onClick={handleDeleteAccount}
+        >
           <div className="d-flex align-items-center gap-3">
-            <FaHistory />
-            <span className="fw-semibold">History</span>
+            <FaTrash />
+            <span className="fw-semibold">Delete Account</span>
           </div>
           <FaChevronRight />
         </div>

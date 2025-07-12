@@ -1,49 +1,57 @@
 import { useState } from "react";
+import axios from "axios";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Password reset link will be sent to: " + email);
-    // Later: send email to backend for real password reset
+
+    try {
+      setLoading(true);
+      const res = await axios.post("http://localhost:4000/api/auth/reset-password-request", {
+        email,
+      });
+      setMessage(res.data.msg);
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.msg || "Error sending reset email.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-white">
-      <div className="row w-100" style={{ maxWidth: "1200px" }}>
-        {/* Left - Logo */}
-        <div className="col-md-6 d-flex flex-column align-items-center justify-content-center text-center px-5">
-          <img src="/logo.png" alt="Logo" style={{ width: "200px", marginBottom: "20px" }} />
-          <h2 className="fw-bold text-dark">TRAVVIE</h2>
-          <p className="text-secondary">Plan Less. Explore More</p>
-        </div>
+    <div className="container py-5">
+      <h3 className="mb-4 text-center">🔒 Forgot Password</h3>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto"
+        style={{ maxWidth: "400px" }}
+      >
+        <input
+          type="email"
+          className="form-control mb-3"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        {/* Right - Forgot Password Form */}
-        <div className="col-md-6 d-flex flex-column justify-content-center px-4">
-          <div
-            className="bg-white shadow rounded p-4 text-center"
-            style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}
-          >
-            <h4 className="fw-bold mb-4">Forgot Password</h4>
-            <p className="text-muted mb-4">Enter your email to receive a reset link.</p>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="email"
-                className="form-control mb-4 rounded-pill px-4 py-2"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ backgroundColor: "#f0f4ff", border: "2px solid #587ff3" }}
-                required
-              />
-              <button type="submit" className="btn w-100 mb-3 text-white fw-bold rounded-pill" style={{ backgroundColor: "#00addc", fontSize: "1.1rem" }}>
-                Send Reset Link
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
+        <button
+          className="btn btn-primary w-100"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Sending..." : "Send Reset Link"}
+        </button>
+      </form>
+
+      {message && (
+        <div className="alert alert-info mt-3 text-center">{message}</div>
+      )}
     </div>
   );
 }

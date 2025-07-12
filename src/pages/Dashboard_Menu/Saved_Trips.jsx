@@ -7,6 +7,7 @@ function Saved_Trips() {
   const [editingTrip, setEditingTrip] = useState(null);
   const [editForm, setEditForm] = useState({
     title: "",
+    from: "",
     destination: "",
     startDate: "",
     endDate: "",
@@ -59,11 +60,12 @@ function Saved_Trips() {
   const startEditing = (trip) => {
     setEditingTrip(trip);
     setEditForm({
-      title: trip.title,
-      destination: trip.destination,
+      title: trip.title || "",
+      from: trip.from || "",
+      destination: trip.destination || "",
       startDate: trip.startDate?.slice(0, 10) || "",
       endDate: trip.endDate?.slice(0, 10) || "",
-      itinerary: trip.itinerary,
+      itinerary: trip.itinerary || "",
     });
   };
 
@@ -92,6 +94,7 @@ function Saved_Trips() {
           <thead>
             <tr>
               <th>Title</th>
+              <th>From</th>
               <th>Destination</th>
               <th>Dates</th>
               <th>Actions</th>
@@ -101,6 +104,7 @@ function Saved_Trips() {
             {trips.map((trip) => (
               <tr key={trip._id}>
                 <td>{trip.title}</td>
+                <td>{trip.from}</td>
                 <td>{trip.destination}</td>
                 <td>
                   {trip.startDate?.slice(0, 10)} -{" "}
@@ -158,6 +162,14 @@ function Saved_Trips() {
                   value={editForm.title}
                   onChange={(e) =>
                     setEditForm({ ...editForm, title: e.target.value })
+                  }
+                />
+                <input
+                  className="form-control mb-2"
+                  placeholder="From"
+                  value={editForm.from}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, from: e.target.value })
                   }
                 />
                 <input

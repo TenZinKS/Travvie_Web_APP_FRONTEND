@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaMedal, FaCheckCircle, FaTimesCircle, FaPlane, FaHeart } from "react-icons/fa";
+import {
+  FaMedal,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaPlane,
+  FaHeart,
+} from "react-icons/fa";
 import CountUp from "react-countup";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [trips, setTrips] = useState([]);
@@ -17,6 +24,7 @@ function Home() {
   const [tip, setTip] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   const travelTips = [
     "Always keep digital and physical copies of important documents.",
@@ -28,7 +36,7 @@ function Home() {
     "Try local food for an authentic experience.",
     "Keep emergency contacts handy.",
     "Use apps to navigate and translate.",
-    "Check visa requirements before traveling."
+    "Check visa requirements before traveling.",
   ];
 
   useEffect(() => {
@@ -43,15 +51,15 @@ function Home() {
 
   const fetchTrips = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/trips/user/${user.id}`);
+      const res = await axios.get(
+        `http://localhost:4000/api/trips/user/${user.id}`
+      );
       const allTrips = res.data;
 
-      const completed = allTrips.filter(t => t.status === "completed").length;
-      const wishlist = allTrips.filter(t => t.status === "wishlist").length;
-      const cancelled = allTrips.filter(t => t.status === "cancelled").length;
-      const upcoming = allTrips.filter(
-        t => t.status === "planned" || t.status === "upcoming"
-      ).length;
+      const completed = allTrips.filter((t) => t.status === "completed").length;
+      const wishlist = allTrips.filter((t) => t.status === "wishlist").length;
+      const cancelled = allTrips.filter((t) => t.status === "cancelled").length;
+      const upcoming = allTrips.filter((t) => t.status === "upcoming").length;
 
       const total = completed + cancelled;
       let completionPct = 0;
@@ -64,7 +72,8 @@ function Home() {
       let msg = "Start exploring more to level up your travel profile!";
       if (completionPct > 70) {
         rank = "Gold";
-        msg = "Awesome! You’re a seasoned traveller with fantastic trip success.";
+        msg =
+          "Awesome! You’re a seasoned traveller with fantastic trip success.";
       } else if (completionPct >= 40) {
         rank = "Silver";
         msg = "Good job! Keep travelling and aim for Gold.";
@@ -89,6 +98,14 @@ function Home() {
     }
   };
 
+  const handleStatClick = (statusKey) => {
+    if (statusKey === "wishlist") {
+      navigate("/dashboard/saved_trips");
+    } else {
+      navigate(`/dashboard/my_trips?status=${statusKey}`);
+    }
+  };
+
   return (
     <div className="container py-5">
       <h3 className="mb-4 text-center">🌍 My Travel Dashboard</h3>
@@ -99,34 +116,49 @@ function Home() {
           count={stats.completed}
           icon={<FaCheckCircle />}
           color="success"
+          tooltip="Trips you've successfully completed."
+          onClick={() => handleStatClick("completed")}
         />
         <StatCard
           title="Wishlist Trips"
           count={stats.wishlist}
           icon={<FaHeart />}
           color="warning"
+          tooltip="Trips saved for future inspiration."
+          onClick={() => handleStatClick("wishlist")}
         />
         <StatCard
           title="Cancelled Trips"
           count={stats.cancelled}
           icon={<FaTimesCircle />}
           color="danger"
+          tooltip="Trips that were cancelled."
+          onClick={() => handleStatClick("cancelled")}
         />
         <StatCard
           title="Upcoming Trips"
           count={stats.upcoming}
           icon={<FaPlane />}
           color="primary"
+          tooltip="Trips you've confirmed and are looking forward to."
+          onClick={() => handleStatClick("upcoming")}
         />
       </div>
 
       <div className="mt-5 text-center">
-        <RankCard rank={rank} completionRate={completionRate} message={message} />
+        <RankCard
+          rank={rank}
+          completionRate={completionRate}
+          message={message}
+        />
       </div>
 
       <div className="mt-4 text-center">
         <h5 className="mb-3">✈️ Travel Tip of the Day</h5>
-        <div className="alert alert-secondary d-inline-block" style={{ maxWidth: "600px" }}>
+        <div
+          className="alert alert-secondary d-inline-block"
+          style={{ maxWidth: "600px" }}
+        >
           {tip}
         </div>
       </div>
@@ -134,10 +166,15 @@ function Home() {
   );
 }
 
-function StatCard({ title, count, icon, color }) {
+function StatCard({ title, count, icon, color, tooltip, onClick }) {
   return (
     <div className="col-md-3">
-      <div className={`card text-white bg-${color} h-100`}>
+      <div
+        className={`card text-white bg-${color} h-100`}
+        title={tooltip}
+        style={{ cursor: "pointer" }}
+        onClick={onClick}
+      >
         <div className="card-body text-center">
           <div style={{ fontSize: "2rem" }}>{icon}</div>
           <h5 className="card-title mt-2">{title}</h5>
