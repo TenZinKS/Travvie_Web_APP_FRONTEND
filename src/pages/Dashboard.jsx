@@ -74,22 +74,31 @@ function Dashboard() {
         {/* Top Bar */}
         <div className="d-flex justify-content-between align-items-center px-4 py-3 border-bottom bg-white shadow-sm">
           <div className="d-flex align-items-center gap-3">
-            <FaBars
-              size={22}
-              style={{ cursor: "pointer" }}
+            <button
+              type="button"
+              aria-label="Toggle sidebar"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-            />
+              data-testid="toggle-button"
+              style={{
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <FaBars size={22} />
+            </button>
             <h4 className="fw-bold m-0">Travvie</h4>
           </div>
           <FaUserCircle
+            data-testid="profile-icon"
             size={28}
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/profile")}
           />
         </div>
 
-        {/* Outlet for nested routes */}
-        <div className="p-4">
+        <div className="p-4" data-testid="outlet">
           <Outlet />
         </div>
       </div>
